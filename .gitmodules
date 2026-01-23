@@ -6,3 +6,10 @@
 	path = extension-ci-tools
 	url = https://github.com/duckdb/extension-ci-tools
 	branch = main
+[submodule "paimon-cpp"]
+	path = paimon-cpp
+	url = git@github.com:alibaba/paimon-cpp.git
+[submodule "arrow"]
+	path = arrow
+	url = git@github.com:apache/arrow.git
+	branch = release-22.0.0-rc1

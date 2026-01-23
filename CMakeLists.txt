@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 # Set extension name here
-set(TARGET_NAME quack)
+set(TARGET_NAME paimon)
 
 # DuckDB's extension distribution supports vcpkg. As such, dependencies can be added in ./vcpkg.json and then
 # used in cmake with find_package. Feel free to remove or replace with other dependencies.
@@ -12,9 +12,16 @@ set(EXTENSION_NAME ${TARGET_NAME}_extension)
 set(LOADABLE_EXTENSION_NAME ${TARGET_NAME}_loadable_extension)
 
 project(${TARGET_NAME})
+
+add_subdirectory(paimon-cpp)
 include_directories(src/include)
 
-set(EXTENSION_SOURCES src/quack_extension.cpp)
+# Add paimon-cpp third party includes to make roaring.hh and fmt/format.h accessible
+include_directories(${CMAKE_SOURCE_DIR}/paimon-cpp/third_party/roaring_bitmap)
+include_directories(${CMAKE_SOURCE_DIR}/paimon-cpp/third_party/xxhash)
+include_directories(${CMAKE_SOURCE_DIR}/paimon-cpp/third_party/fmt/include)
+
+set(EXTENSION_SOURCES src/paimon_extension.cpp)
 
 build_static_extension(${TARGET_NAME} ${EXTENSION_SOURCES})
 build_loadable_extension(${TARGET_NAME} " " ${EXTENSION_SOURCES})
