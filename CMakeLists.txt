@@ -8,27 +8,30 @@ set(TARGET_NAME paimon)
 # Note that it should also be removed from vcpkg.json to prevent needlessly installing it..
 find_package(OpenSSL REQUIRED)
 
+# Set the path to find Paimon configuration
+set(PAIMON_OUTPUT_DIR ${CMAKE_CURRENT_LIST_DIR}/output/paimon-cpp)
+set(ARROW_OUTPUT_DIR ${CMAKE_CURRENT_LIST_DIR}/output/arrow-cpp)
+# Add the output directory to the library search path
+list(APPEND CMAKE_PREFIX_PATH ${PAIMON_OUTPUT_DIR})
+list(APPEND CMAKE_PREFIX_PATH ${ARROW_OUTPUT_DIR})
+
+find_package(Paimon CONFIG REQUIRED)
+find_package(Arrow CONFIG REQUIRED)
+
 set(EXTENSION_NAME ${TARGET_NAME}_extension)
 set(LOADABLE_EXTENSION_NAME ${TARGET_NAME}_loadable_extension)
 
 project(${TARGET_NAME})
 
-add_subdirectory(paimon-cpp)
 include_directories(src/include)
-
-# Add paimon-cpp third party includes to make roaring.hh and fmt/format.h accessible
-include_directories(${CMAKE_SOURCE_DIR}/paimon-cpp/third_party/roaring_bitmap)
-include_directories(${CMAKE_SOURCE_DIR}/paimon-cpp/third_party/xxhash)
-include_directories(${CMAKE_SOURCE_DIR}/paimon-cpp/third_party/fmt/include)
-
 set(EXTENSION_SOURCES src/paimon_extension.cpp)
 
 build_static_extension(${TARGET_NAME} ${EXTENSION_SOURCES})
 build_loadable_extension(${TARGET_NAME} " " ${EXTENSION_SOURCES})
 
 # Link OpenSSL in both the static library as the loadable extension
-target_link_libraries(${EXTENSION_NAME} OpenSSL::SSL OpenSSL::Crypto)
-target_link_libraries(${LOADABLE_EXTENSION_NAME} OpenSSL::SSL OpenSSL::Crypto)
+target_link_libraries(${EXTENSION_NAME} OpenSSL::SSL OpenSSL::Crypto arrow_shared paimon_shared paimon_parquet_file_format_shared)
+target_link_libraries(${LOADABLE_EXTENSION_NAME} OpenSSL::SSL OpenSSL::Crypto arrow_shared paimon_shared paimon_parquet_file_format_shared)
 
 install(
   TARGETS ${EXTENSION_NAME}
