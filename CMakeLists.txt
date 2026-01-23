@@ -9,8 +9,8 @@ set(TARGET_NAME paimon)
 find_package(OpenSSL REQUIRED)
 
 # Set the path to find Paimon configuration
-set(PAIMON_OUTPUT_DIR ${CMAKE_CURRENT_LIST_DIR}/output/paimon-cpp)
-set(ARROW_OUTPUT_DIR ${CMAKE_CURRENT_LIST_DIR}/output/arrow-cpp)
+set(PAIMON_OUTPUT_DIR ${CMAKE_CURRENT_LIST_DIR}/submodules/output/paimon-cpp)
+set(ARROW_OUTPUT_DIR ${CMAKE_CURRENT_LIST_DIR}/submodules/output/arrow-cpp)
 # Add the output directory to the library search path
 list(APPEND CMAKE_PREFIX_PATH ${PAIMON_OUTPUT_DIR})
 list(APPEND CMAKE_PREFIX_PATH ${ARROW_OUTPUT_DIR})
